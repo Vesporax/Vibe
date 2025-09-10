@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from .models import Mod, Game, Category
+from .models import Mod, ModImage, Game, Category
 from .forms import ModUploadForm
 
 

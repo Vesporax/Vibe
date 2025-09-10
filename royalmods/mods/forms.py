@@ -4,6 +4,26 @@ from django.utils.text import slugify
 from .models import Mod, ModImage, Game, Category
 
 
+class MultipleFileInput(forms.ClearableFileInput):
+    """Custom widget for multiple file uploads"""
+    allow_multiple_selected = True
+
+
+class MultipleFileField(forms.FileField):
+    """Custom field for multiple file uploads"""
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            result = [single_file_clean(d, initial) for d in data]
+        else:
+            result = single_file_clean(data, initial)
+        return result
+
+
 class ModUploadForm(forms.ModelForm):
     """Form for uploading new mods"""
     other_authors = forms.ModelMultipleChoiceField(
@@ -13,8 +33,7 @@ class ModUploadForm(forms.ModelForm):
         help_text='Select additional authors for this mod'
     )
     
-    images = forms.FileField(
-        widget=forms.FileInput(attrs={'allow_multiple_selected': True, 'accept': 'image/*'}),
+    images = MultipleFileField(
         required=False,
         help_text='Upload up to 6 preview images (PNG or JPG)'
     )
