@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results - RoyalMods{% endblock %}
+
+{% block content %}
+<div class="search-page">
+    <div class="page-header">
+        <h1>Search Results</h1>
+        {% if query %}
+            <p>Results for "{{ query }}"</p>
+        {% else %}
+            <p>Use filters to find mods</p>
+        {% endif %}
+    </div>
+
+    <!-- Advanced Search Filters -->
+    <div class="search-filters">
+        <form method="get" class="filters-form">
+            <div class="filter-group">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search mods..." class="filter-input">
+            </div>
+            
+            <div class="filter-group">
+                <select name="game" class="filter-select">
+                    <option value="">All Games</option>
+                    {% for game in games %}
+                        <option value="{{ game.slug }}" {% if selected_game == game.slug %}selected{% endif %}>
+                            {{ game.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <select name="category" class="filter-select">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <!-- Results -->
+    {% if search_results %}
+        <div class="search-results-count">
+            <p>Found {{ search_results|length }} mod{{ search_results|length|pluralize }}</p>
+        </div>
+
+        <div class="mods-grid">
+            {% for mod in search_results %}
+                <div class="mod-card">
+                    <div class="mod-images">
+                        {% if mod.images.first %}
+                            <img src="{{ mod.images.first.image.url }}" alt="{{ mod.name }}" class="mod-main-image">
+                            {% if mod.images.count > 1 %}
+                                <div class="mod-thumbnails">
+                                    {% for image in mod.images.all|slice:":4" %}
+                                        <img src="{{ image.image.url }}" alt="{{ mod.name }}" class="mod-thumbnail" onclick="swapImage(this, '{{ image.image.url }}')">
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="mod-placeholder">No Image</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mod-info">
+                        <h3><a href="{{ mod.get_absolute_url }}">{{ mod.name }}</a></h3>
+                        <p class="mod-author">by <a href="{% url 'accounts:profile' mod.main_author.username %}">{{ mod.main_author.username }}</a></p>
+                        <p class="mod-game">{{ mod.game.name }}</p>
+                        <div class="mod-categories">
+                            {% for category in mod.categories.all %}
+                                <span class="category-tag">{{ category.name }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="mod-stats">
+                            <span class="mod-views">👁 {{ mod.views_count }}</span>
+                            <span class="mod-downloads">⬇ {{ mod.downloads_count }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <div class="pagination-container">
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?{% if query %}q={{ query }}&{% endif %}{% if selected_game %}game={{ selected_game }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}page=1" class="btn btn-outline">First</a>
+                        <a href="?{% if query %}q={{ query }}&{% endif %}{% if selected_game %}game={{ selected_game }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ page_obj.previous_page_number }}" class="btn btn-outline">Previous</a>
+                    {% endif %}
+                    
+                    <span class="page-info">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+                    
+                    {% if page_obj.has_next %}
+                        <a href="?{% if query %}q={{ query }}&{% endif %}{% if selected_game %}game={{ selected_game }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ page_obj.next_page_number }}" class="btn btn-outline">Next</a>
+                        <a href="?{% if query %}q={{ query }}&{% endif %}{% if selected_game %}game={{ selected_game }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">Last</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="no-results">
+            {% if query or selected_game or selected_category %}
+                <p>No mods found matching your search criteria.</p>
+                <a href="{% url 'core:search' %}" class="btn btn-secondary">Clear Filters</a>
+            {% else %}
+                <p>Use the search form above to find mods.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

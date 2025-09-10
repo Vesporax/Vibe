@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Featured Mods - RoyalMods{% endblock %}
+
+{% block content %}
+<div class="featured-page">
+    <div class="page-header">
+        <h1>Featured Mods</h1>
+        <p>Most popular mods from our community</p>
+    </div>
+
+    {% if featured_mods %}
+        <div class="mods-grid">
+            {% for mod in featured_mods %}
+                <div class="mod-card">
+                    <div class="mod-images">
+                        {% if mod.images.first %}
+                            <img src="{{ mod.images.first.image.url }}" alt="{{ mod.name }}" class="mod-main-image">
+                            {% if mod.images.count > 1 %}
+                                <div class="mod-thumbnails">
+                                    {% for image in mod.images.all|slice:":4" %}
+                                        <img src="{{ image.image.url }}" alt="{{ mod.name }}" class="mod-thumbnail" onclick="swapImage(this, '{{ image.image.url }}')">
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="mod-placeholder">No Image</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mod-info">
+                        <h3><a href="{{ mod.get_absolute_url }}">{{ mod.name }}</a></h3>
+                        <p class="mod-author">by <a href="{% url 'accounts:profile' mod.main_author.username %}">{{ mod.main_author.username }}</a></p>
+                        <p class="mod-game">{{ mod.game.name }}</p>
+                        <div class="mod-stats">
+                            <span class="mod-views">👁 {{ mod.views_count }}</span>
+                            <span class="mod-downloads">⬇ {{ mod.downloads_count }}</span>
+                        </div>
+                        <p class="mod-date">{{ mod.created_at|date:"M d, Y" }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <div class="pagination-container">
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1" class="btn btn-outline">First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline">Previous</a>
+                    {% endif %}
+                    
+                    <span class="page-info">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+                    
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline">Next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">Last</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="no-mods">
+            <p>No featured mods available yet.</p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'mods:upload' %}" class="btn btn-primary">Upload the First Mod!</a>
+            {% else %}
+                <a href="{% url 'account_signup' %}" class="btn btn-primary">Join to Upload Mods</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
