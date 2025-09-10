@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - RoyalMods{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Join RoyalMods</h1>
+            <p>Create your account to start sharing mods</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_username">Username *</label>
+                <input type="text" name="username" id="id_username" required class="form-input" 
+                       value="{{ form.username.value|default:'' }}" placeholder="Choose a unique username">
+                {% if form.username.errors %}
+                    <div class="form-errors">
+                        {% for error in form.username.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">Email *</label>
+                <input type="email" name="email" id="id_email" required class="form-input" 
+                       value="{{ form.email.value|default:'' }}" placeholder="your@email.com">
+                {% if form.email.errors %}
+                    <div class="form-errors">
+                        {% for error in form.email.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password1">Password *</label>
+                <input type="password" name="password1" id="id_password1" required class="form-input" 
+                       placeholder="Create a strong password">
+                {% if form.password1.errors %}
+                    <div class="form-errors">
+                        {% for error in form.password1.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password2">Confirm Password *</label>
+                <input type="password" name="password2" id="id_password2" required class="form-input" 
+                       placeholder="Confirm your password">
+                {% if form.password2.errors %}
+                    <div class="form-errors">
+                        {% for error in form.password2.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Captcha -->
+            <div class="form-group">
+                <label>Security Check *</label>
+                <div class="captcha-container">
+                    {% load captcha_tags %}
+                    {% captcha_field %}
+                </div>
+                {% if form.captcha.errors %}
+                    <div class="form-errors">
+                        {% for error in form.captcha.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+        </form>
+
+        <div class="auth-links">
+            <p>Already have an account? <a href="{% url 'account_login' %}">Sign In</a></p>
+        </div>
+
+        <div class="social-auth">
+            <div class="divider">
+                <span>or</span>
+            </div>
+            <a href="{% url 'socialaccount_provider_login' 'google' %}" class="btn btn-google">
+                <span class="google-icon">🔍</span>
+                Continue with Google
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
