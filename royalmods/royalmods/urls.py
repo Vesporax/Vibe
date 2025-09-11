@@ -25,7 +25,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('allauth.urls')),
     path('mods/', include('mods.urls')),
-    path('captcha/', include('captcha.urls')),
 ]
 
 if settings.DEBUG:

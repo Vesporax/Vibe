@@ -66,22 +66,6 @@
                 {% endif %}
             </div>
 
-            <!-- Captcha -->
-            <div class="form-group">
-                <label>Security Check *</label>
-                <div class="captcha-container">
-                    {% load captcha_tags %}
-                    {% captcha_field %}
-                </div>
-                {% if form.captcha.errors %}
-                    <div class="form-errors">
-                        {% for error in form.captcha.errors %}
-                            <span class="error">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
             <button type="submit" class="btn btn-primary btn-full">Create Account</button>
         </form>
 
