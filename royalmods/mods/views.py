@@ -98,3 +98,26 @@ class ModDownloadView(View):
         mod = get_object_or_404(Mod, slug=slug, status='approved')
         mod.increment_downloads()
         return redirect(mod.download_link)
+    
+class ModEditView(LoginRequiredMixin, CreateView):
+    """Upload new mod form"""
+    model = Mod
+    form_class = ModUploadForm
+    template_name = 'mods/edit.html'
+    success_url = reverse_lazy('accounts:creator_studio')
+    
+    def form_valid(self, form):
+        form.instance.main_author = self.request.user
+        response = super().form_valid(form)
+        
+        # Handle multiple image uploads
+        images = self.request.FILES.getlist('images')
+        for i, image_file in enumerate(images[:6]):
+            ModImage.objects.create(
+                mod=form.instance,
+                image=image_file,
+                order=i
+            )
+        
+        messages.success(self.request, 'Mod uploaded successfully! It will be reviewed by admins before going public.')
+        return response

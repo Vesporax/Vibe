@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit {{ form.instance.name }} - RoyalMods{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/upload.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container upload-container">
+        <div class="auth-header">
+            <h1>Edit Mod</h1>
+            <p>Update your mod information</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="auth-form">
+            {% csrf_token %}
+            
+            <!-- Basic Information -->
+            <div class="settings-group">
+                <h2 class="settings-subtitle">Basic Information</h2>
+                
+                <div class="form-group">
+                    <label for="id_name">Mod Name *</label>
+                    <input type="text" name="name" id="id_name" required class="form-input" 
+                           value="{{ form.name.value|default:form.instance.name }}">
+                    {% if form.name.errors %}
+                        <div class="form-errors">
+                            {% for error in form.name.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_description">Description *</label>
+                    <textarea name="description" id="id_description" required class="form-input" 
+                              rows="6">{{ form.description.value|default:form.instance.description }}</textarea>
+                    {% if form.description.errors %}
+                        <div class="form-errors">
+                            {% for error in form.description.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_version">Version *</label>
+                    <input type="text" name="version" id="id_version" required class="form-input" 
+                           value="{{ form.version.value|default:form.instance.version }}">
+                    {% if form.version.errors %}
+                        <div class="form-errors">
+                            {% for error in form.version.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Classification -->
+            <div class="settings-group">
+                <h2 class="settings-subtitle">Classification</h2>
+                
+                <div class="form-group">
+                    <label for="id_game">Game *</label>
+                    <select name="game" id="id_game" required class="form-select">
+                        {% for game in form.game.field.choices %}
+                            {% if game.0 %}
+                                <option value="{{ game.0 }}" {% if game.0 == form.instance.game.id %}selected{% endif %}>
+                                    {{ game.1 }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    {% if form.game.errors %}
+                        <div class="form-errors">
+                            {% for error in form.game.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>Categories</label>
+                    <div class="checkbox-list">
+                        {% for category in form.categories %}
+                            <label class="checkbox-label">
+                                {{ category.tag }}
+                                {{ category.choice_label }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.categories.errors %}
+                        <div class="form-errors">
+                            {% for error in form.categories.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Download & Dependencies -->
+            <div class="settings-group">
+                <h2 class="settings-subtitle">Download & Dependencies</h2>
+                
+                <div class="form-group">
+                    <label for="id_download_link">Download Link *</label>
+                    <input type="url" name="download_link" id="id_download_link" required class="form-input" 
+                           value="{{ form.download_link.value|default:form.instance.download_link }}">
+                    <small class="form-help">External URL where users can download your mod</small>
+                    {% if form.download_link.errors %}
+                        <div class="form-errors">
+                            {% for error in form.download_link.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>Required Mods</label>
+                    <div class="checkbox-list">
+                        {% for mod in form.required_mods %}
+                            <label class="checkbox-label">
+                                {{ mod.tag }}
+                                {{ mod.choice_label }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                    <small class="form-help">Select any mods that are required for yours to work</small>
+                    {% if form.required_mods.errors %}
+                        <div class="form-errors">
+                            {% for error in form.required_mods.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Authors -->
+            <div class="settings-group">
+                <h2 class="settings-subtitle">Authors</h2>
+                
+                <div class="form-group">
+                    <label>Additional Authors</label>
+                    <div class="checkbox-list">
+                        {% for author in form.other_authors %}
+                            <label class="checkbox-label">
+                                {{ author.tag }}
+                                {{ author.choice_label }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                    <small class="form-help">You are listed as the main author</small>
+                    {% if form.other_authors.errors %}
+                        <div class="form-errors">
+                            {% for error in form.other_authors.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Current Images -->
+            {% if form.instance.images.exists %}
+                <div class="settings-group">
+                    <h2 class="settings-subtitle">Current Images</h2>
+                    <div class="image-preview-container">
+                        {% for image in form.instance.images.all %}
+                            <div class="image-preview">
+                                <img src="{{ image.image.url }}" alt="Current image {{ forloop.counter }}">
+                                <span class="image-number">{% if forloop.first %}Main{% else %}#{{ forloop.counter }}{% endif %}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <small class="form-help">Note: Uploading new images will replace all existing images</small>
+                </div>
+            {% endif %}
+
+            <!-- New Images -->
+            <div class="settings-group">
+                <h2 class="settings-subtitle">Upload New Images (Optional)</h2>
+                
+                <div class="form-group">
+                    <label for="id_images">Replace Images</label>
+                    <input type="file" name="images" id="id_images" multiple accept="image/png,image/jpeg,image/jpg" class="form-input">
+                    <small class="form-help">
+                        Leave empty to keep current images. Upload new images to replace ALL existing ones.
+                        Maximum 6 images (PNG or JPG).
+                    </small>
+                    {% if form.images.errors %}
+                        <div class="form-errors">
+                            {% for error in form.images.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div id="image-preview" class="image-preview-container"></div>
+            </div>
+
+            <!-- Submit -->
+            <div class="form-group">
+                {% if form.instance.status == 'approved' %}
+                    <div class="upload-alert">
+                        <strong>Note:</strong> Your mod will need to be reviewed again after editing.
+                    </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary btn-full">Save Changes</button>
+            </div>
+        </form>
+
+        <div class="auth-links">
+            <a href="{% url 'mods:detail' form.instance.slug %}">← Back to Mod</a>
+            <span class="link-separator">•</span>
+            <a href="{% url 'accounts:creator_studio' %}">Creator Studio</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/upload.js' %}"></script>
+{% endblock %}

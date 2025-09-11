@@ -65,6 +65,7 @@
                                     {% if mod.status == 'approved' %}
                                         <a href="{{ mod.get_absolute_url }}" class="btn-small">View</a>
                                     {% endif %}
+                                    <a href="{% url 'mods:edit' mod.slug %}" class="btn-small">Edit</a>
                                 </td>
                             </tr>
                         {% endfor %}
