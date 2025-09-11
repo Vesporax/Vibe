@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load socialaccount %}
 
 {% block title %}Sign Up - RoyalMods{% endblock %}
 
@@ -77,10 +78,17 @@
             <div class="divider">
                 <span>or</span>
             </div>
-            <a href="{% url 'socialaccount_provider_login' 'google' %}" class="btn btn-google">
-                <span class="google-icon">🔍</span>
-                Continue with Google
-            </a>
+            {% get_providers as socialaccount_providers %}
+            {% if socialaccount_providers %}
+                {% for provider in socialaccount_providers %}
+                    {% if provider.id == "google" %}
+                        <a href="{% provider_login_url provider.id %}" class="btn btn-google">
+                            <span class="google-icon">🔍</span>
+                            Continue with Google
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 </div>
