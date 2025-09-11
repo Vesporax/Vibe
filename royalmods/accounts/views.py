@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse_lazy
 from .models import UserProfile
-from .forms import UserProfileForm, SocialMediaFormSet
+from .forms import UserProfileForm
 from mods.models import Mod
 
 
@@ -38,26 +38,10 @@ class UserSettingsView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user.profile
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['social_formset'] = SocialMediaFormSet(self.request.POST, instance=self.request.user)
-        else:
-            context['social_formset'] = SocialMediaFormSet(instance=self.request.user)
-        return context
-    
     def form_valid(self, form):
-        context = self.get_context_data()
-        social_formset = context['social_formset']
-        
-        if social_formset.is_valid():
-            response = super().form_valid(form)
-            social_formset.instance = self.request.user
-            social_formset.save()
-            messages.success(self.request, 'Profile updated successfully!')
-            return response
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
+        response = super().form_valid(form)
+        messages.success(self.request, 'Profile updated successfully!')
+        return response
 
 
 class CreatorStudioView(LoginRequiredMixin, ListView):

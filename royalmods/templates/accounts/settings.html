@@ -4,110 +4,122 @@
 {% block title %}Settings - RoyalMods{% endblock %}
 
 {% block content %}
-<div class="settings-page">
-    <div class="page-header">
-        <h1>Account Settings</h1>
-        <p>Manage your profile and preferences</p>
-    </div>
-
-    <form method="post" class="settings-form">
-        {% csrf_token %}
-        
-        <div class="settings-section">
-            <h2>Account Information</h2>
-            
-            <div class="form-group">
-                <label for="id_username">Username</label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <div class="form-errors">
-                        {% for error in form.username.errors %}
-                            <span class="error">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="id_email">Email</label>
-                {{ form.email }}
-                {% if form.email.errors %}
-                    <div class="form-errors">
-                        {% for error in form.email.errors %}
-                            <span class="error">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                <label for="id_first_name">First Name (Optional)</label>
-                {{ form.first_name }}
-            </div>
-
-            <div class="form-group">
-                <label for="id_last_name">Last Name (Optional)</label>
-                {{ form.last_name }}
-            </div>
+<div class="auth-page">
+    <div class="auth-container settings-container">
+        <div class="auth-header">
+            <h1>Account Settings</h1>
+            <p>Manage your profile and preferences</p>
         </div>
 
-        <div class="settings-section">
-            <h2>Profile Information</h2>
-            
-            <div class="form-group">
-                <label for="id_self_presentation">Self Presentation</label>
-                {{ form.self_presentation }}
-                <small class="form-help">Tell others about yourself</small>
-            </div>
+        <div class="settings-nav">
+            <a href="{% url 'accounts:profile' user.username %}" class="btn btn-outline btn-full">
+                👁 View My Public Profile
+            </a>
         </div>
 
-        <div class="settings-section">
-            <h2>Social Media Links</h2>
-            {{ social_formset.management_form }}
+        <form method="post" class="auth-form">
+            {% csrf_token %}
             
-            <div id="social-forms">
-                {% for form in social_formset %}
-                    <div class="social-form-row">
-                        {% if form.instance.pk %}{{ form.DELETE }}{% endif %}
-                        {{ form.id }}
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Platform</label>
-                                {{ form.platform }}
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>URL</label>
-                                {{ form.url }}
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Display Name</label>
-                                {{ form.display_name }}
-                            </div>
+            <!-- Account Information -->
+            <div class="settings-group">
+                <h2 class="settings-subtitle">Account Information</h2>
+                
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="form-errors">
+                            {% for error in form.username.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
                         </div>
-                        
-                        {% if form.errors %}
-                            <div class="form-errors">
-                                {{ form.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_email">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="form-errors">
+                            {% for error in form.email.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_first_name">First Name</label>
+                    {{ form.first_name }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_last_name">Last Name</label>
+                    {{ form.last_name }}
+                </div>
             </div>
-        </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <a href="{% url 'accounts:profile' user.username %}" class="btn btn-secondary">Cancel</a>
-        </div>
-    </form>
+            <!-- Profile Information -->
+            <div class="settings-group">
+                <h2 class="settings-subtitle">Profile Information</h2>
+                
+                <div class="form-group">
+                    <label for="id_self_presentation">Self Presentation</label>
+                    {{ form.self_presentation }}
+                    <small class="form-help">This will be displayed on your public profile</small>
+                </div>
+            </div>
 
-    <div class="settings-section danger-zone">
-        <h2>Other Actions</h2>
-        <a href="{% url 'account_change_password' %}" class="btn btn-outline">Change Password</a>
-        <a href="{% url 'account_email' %}" class="btn btn-outline">Manage Email Addresses</a>
+            <!-- Social Media Links -->
+            <div class="settings-group">
+                <h2 class="settings-subtitle">Social Media Links</h2>
+                
+                <div class="form-group">
+                    <label for="id_facebook_url">
+                        <span class="social-icon">📘</span> Facebook/Meta
+                    </label>
+                    {{ form.facebook_url }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_youtube_url">
+                        <span class="social-icon">📺</span> YouTube
+                    </label>
+                    {{ form.youtube_url }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_discord_url">
+                        <span class="social-icon">💬</span> Discord
+                    </label>
+                    {{ form.discord_url }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_other_url">
+                        <span class="social-icon">🔗</span> Other Social Media
+                    </label>
+                    {{ form.other_url }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_other_display_name">Display Name for Other Social Media</label>
+                    {{ form.other_display_name }}
+                    <small class="form-help">Required if you add an "Other" social media link</small>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">Save Changes</button>
+        </form>
+
+        <div class="auth-links">
+            <h2 class="settings-subtitle">Other Actions</h2>
+            <a href="{% url 'account_change_password' %}">Change Password</a>
+            <span class="link-separator">•</span>
+            <a href="{% url 'account_email' %}">Manage Email Addresses</a>
+            <span class="link-separator">•</span>
+            <a href="{% url 'accounts:creator_studio' %}">Go to Creator Studio</a>
+        </div>
     </div>
 </div>
 {% endblock %}
