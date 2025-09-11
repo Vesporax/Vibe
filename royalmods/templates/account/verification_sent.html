@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify Your Email - RoyalMods{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Verify Your Email</h1>
+            <p>We've sent you an email confirmation</p>
+        </div>
+
+        <div class="auth-form">
+            <p>We have sent an email to you for verification. Follow the link provided to finalize the signup process.</p>
+            <p>If you do not see the verification email in your main inbox, check your spam folder.</p>
+            <p>Please contact us if you do not receive the verification email within a few minutes.</p>
+        </div>
+
+        <div class="auth-links">
+            <a href="{% url 'core:home' %}" class="btn btn-primary btn-full">Return to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

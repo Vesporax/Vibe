@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ profile_user.username }} - RoyalMods{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-header">
+        <h1>{{ profile_user.username }}'s Profile</h1>
+        {% if user == profile_user %}
+            <a href="{% url 'accounts:settings' %}" class="btn btn-outline">Edit Profile</a>
+        {% endif %}
+    </div>
+
+    <!-- Profile Tabs -->
+    <div class="profile-tabs">
+        <button class="tab-button active" onclick="showTab('profile-info')">User Profile</button>
+        <button class="tab-button" onclick="showTab('uploads')">Uploads</button>
+    </div>
+
+    <!-- User Profile Tab -->
+    <div id="profile-info" class="tab-content active">
+        <div class="profile-section">
+            <h2>About</h2>
+            {% if profile_user.profile.self_presentation %}
+                <p class="user-presentation">{{ profile_user.profile.self_presentation|linebreaks }}</p>
+            {% else %}
+                <p class="no-content">No presentation yet.</p>
+            {% endif %}
+        </div>
+
+        {% if social_links %}
+            <div class="profile-section">
+                <h2>Social Media</h2>
+                <div class="social-links">
+                    {% for link in social_links %}
+                        <a href="{{ link.url }}" target="_blank" class="social-link">
+                            <span class="social-icon">
+                                {% if link.platform == 'facebook' %}📘{% elif link.platform == 'youtube' %}📺{% elif link.platform == 'discord' %}💬{% else %}🔗{% endif %}
+                            </span>
+                            {{ link.get_platform_name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="profile-section">
+            <h2>Member Information</h2>
+            <p class="member-since">Member since: {{ profile_user.date_joined|date:"F Y" }}</p>
+            <p class="last-login">Last seen: {{ profile_user.last_login|date:"M d, Y" }}</p>
+        </div>
+    </div>
+
+    <!-- Uploads Tab -->
+    <div id="uploads" class="tab-content">
+        <div class="profile-section">
+            <h2>Uploaded Mods</h2>
+            {% if user_mods %}
+                <div class="mods-grid">
+                    {% for mod in user_mods %}
+                        <div class="mod-card">
+                            <div class="mod-images">
+                                {% if mod.images.first %}
+                                    <img src="{{ mod.images.first.image.url }}" alt="{{ mod.name }}" class="mod-main-image">
+                                {% else %}
+                                    <div class="mod-placeholder">No Image</div>
+                                {% endif %}
+                            </div>
+                            <div class="mod-info">
+                                <h3><a href="{{ mod.get_absolute_url }}">{{ mod.name }}</a></h3>
+                                <p class="mod-game">{{ mod.game.name }}</p>
+                                <div class="mod-stats">
+                                    <span class="mod-views">👁 {{ mod.views_count }}</span>
+                                    <span class="mod-downloads">⬇ {{ mod.downloads_count }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="view-more">
+                    <a href="{% url 'mods:list' %}?author={{ profile_user.username }}" class="btn btn-outline">View All Uploads</a>
+                </div>
+            {% else %}
+                <p class="no-content">No mods uploaded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(tabName) {
+    // Hide all tabs
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    // Remove active from all buttons
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    // Show selected tab
+    document.getElementById(tabName).classList.add('active');
+    
+    // Mark button as active
+    event.target.classList.add('active');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Creator Studio - RoyalMods{% endblock %}
+
+{% block content %}
+<div class="creator-studio">
+    <div class="page-header">
+        <h1>Creator Studio</h1>
+        <a href="{% url 'mods:upload' %}" class="btn btn-primary">Upload New Mod</a>
+    </div>
+
+    <div class="studio-stats">
+        <div class="stat-card">
+            <h3>{{ approved_count }}</h3>
+            <p>Approved Mods</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ pending_count }}</h3>
+            <p>Pending Review</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ rejected_count }}</h3>
+            <p>Rejected</p>
+        </div>
+    </div>
+
+    <div class="mods-section">
+        <h2>Your Mods</h2>
+        
+        {% if user_mods %}
+            <div class="mods-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mod Name</th>
+                            <th>Game</th>
+                            <th>Status</th>
+                            <th>Views</th>
+                            <th>Downloads</th>
+                            <th>Uploaded</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mod in user_mods %}
+                            <tr>
+                                <td>
+                                    {% if mod.status == 'approved' %}
+                                        <a href="{{ mod.get_absolute_url }}">{{ mod.name }}</a>
+                                    {% else %}
+                                        {{ mod.name }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ mod.game.name }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ mod.status }}">
+                                        {{ mod.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ mod.views_count }}</td>
+                                <td>{{ mod.downloads_count }}</td>
+                                <td>{{ mod.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if mod.status == 'approved' %}
+                                        <a href="{{ mod.get_absolute_url }}" class="btn-small">View</a>
+                                    {% endif %}
+                                    <a href="{% url 'mods:edit' mod.slug %}" class="btn-small">Edit</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if is_paginated %}
+                <div class="pagination-container">
+                    <div class="pagination">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1" class="btn btn-outline">First</a>
+                            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline">Previous</a>
+                        {% endif %}
+                        
+                        <span class="page-info">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                        
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline">Next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">Last</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="no-mods">
+                <p>You haven't uploaded any mods yet.</p>
+                <a href="{% url 'mods:upload' %}" class="btn btn-primary">Upload Your First Mod</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

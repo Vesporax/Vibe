@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirm Email - RoyalMods{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Confirm Your Email</h1>
+            <p>Please confirm your email address to complete registration</p>
+        </div>
+
+        {% if confirmation %}
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <p>Please confirm that <strong>{{ confirmation.email_address.email }}</strong> is your email address.</p>
+                <button type="submit" class="btn btn-primary btn-full">Confirm Email</button>
+            </form>
+        {% else %}
+            <div class="auth-links">
+                <p>This confirmation link has expired or is invalid.</p>
+                <a href="{% url 'account_email' %}" class="btn btn-secondary">Request New Confirmation</a>
+            </div>
+        {% endif %}
+
+        <div class="auth-links">
+            <a href="{% url 'core:home' %}">Return to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
