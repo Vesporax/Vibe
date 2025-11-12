@@ -32,6 +32,42 @@ class FeaturedView(ListView):
         return Mod.objects.filter(status='approved').select_related('game', 'main_author').order_by('-views_count')
 
 
+class CategoriesView(ListView):
+    """All categories page with banners and icons"""
+    model = Category
+    template_name = 'core/categories.html'
+    context_object_name = 'categories'
+    paginate_by = 12
+    
+    def get_queryset(self):
+        return Category.objects.all().prefetch_related('mods')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add mod counts for each category
+        for category in context['categories']:
+            category.mod_count = category.mods.filter(status='approved').count()
+        return context
+
+
+class GamesView(ListView):
+    """All games page with banners and icons"""
+    model = Game
+    template_name = 'core/games.html'
+    context_object_name = 'games'
+    paginate_by = 12
+    
+    def get_queryset(self):
+        return Game.objects.all().prefetch_related('mods')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add mod counts for each game
+        for game in context['games']:
+            game.mod_count = game.mods.filter(status='approved').count()
+        return context
+
+
 class SearchView(ListView):
     """Search functionality for mods"""
     model = Mod

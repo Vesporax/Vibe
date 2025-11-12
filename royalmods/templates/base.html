@@ -22,6 +22,8 @@
                 
                 <nav class="navbar-nav">
                     <a href="{% url 'core:home' %}">Home</a>
+                    <a href="{% url 'core:games' %}">Games</a>
+                    <a href="{% url 'core:categories' %}">Categories</a>
                     <a href="{% url 'core:featured' %}">Featured</a>
                     {% if user.is_authenticated %}
                         <a href="{% url 'accounts:creator_studio' %}">Creator Studio</a>

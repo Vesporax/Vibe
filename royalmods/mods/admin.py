@@ -10,16 +10,38 @@ class ModImageInline(admin.TabularInline):
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug', 'created_at']
+    list_display = ['name', 'slug', 'has_icon', 'has_banner', 'created_at']
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ['name']
+    fields = ['name', 'slug', 'icon', 'banner']
+    
+    def has_icon(self, obj):
+        return bool(obj.icon)
+    has_icon.boolean = True
+    has_icon.short_description = 'Icon'
+    
+    def has_banner(self, obj):
+        return bool(obj.banner)
+    has_banner.boolean = True
+    has_banner.short_description = 'Banner'
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug', 'created_at']
+    list_display = ['name', 'slug', 'has_icon', 'has_banner', 'created_at']
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ['name']
+    fields = ['name', 'slug', 'description', 'icon', 'banner']
+    
+    def has_icon(self, obj):
+        return bool(obj.icon)
+    has_icon.boolean = True
+    has_icon.short_description = 'Icon'
+    
+    def has_banner(self, obj):
+        return bool(obj.banner)
+    has_banner.boolean = True
+    has_banner.short_description = 'Banner'
 
 
 @admin.register(Mod)

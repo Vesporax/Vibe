@@ -2,12 +2,39 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from PIL import Image
+import os
+
+
+def gameIconPath(instance, filename):
+    """Generate upload path for game icons"""
+    ext = filename.split('.')[-1]
+    return f'games/icons/{instance.slug}.{ext}'
+
+
+def gameBannerPath(instance, filename):
+    """Generate upload path for game banners"""
+    ext = filename.split('.')[-1]
+    return f'games/banners/{instance.slug}.{ext}'
+
+
+def categoryIconPath(instance, filename):
+    """Generate upload path for category icons"""
+    ext = filename.split('.')[-1]
+    return f'categories/icons/{instance.slug}.{ext}'
+
+
+def categoryBannerPath(instance, filename):
+    """Generate upload path for category banners"""
+    ext = filename.split('.')[-1]
+    return f'categories/banners/{instance.slug}.{ext}'
 
 
 class Game(models.Model):
     """Admin-managed game supercategories"""
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
+    icon = models.ImageField(upload_to=gameIconPath, blank=True, null=True)
+    banner = models.ImageField(upload_to=gameBannerPath, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -15,6 +42,32 @@ class Game(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        # Resize icon to 120x120 max
+        if self.icon:
+            img = Image.open(self.icon.path)
+            if img.width > 120 or img.height > 120:
+                img.thumbnail((120, 120), Image.LANCZOS)
+                img.save(self.icon.path, optimize=True, quality=85)
+        
+        # Resize banner to 16:9 ratio with 800px max width
+        if self.banner:
+            img = Image.open(self.banner.path)
+            maxWidth = 800
+            targetRatio = 16/9
+            
+            if img.width > maxWidth:
+                newWidth = maxWidth
+                newHeight = int(newWidth / targetRatio)
+            else:
+                newWidth = img.width
+                newHeight = int(newWidth / targetRatio)
+            
+            img = img.resize((newWidth, newHeight), Image.LANCZOS)
+            img.save(self.banner.path, optimize=True, quality=85)
 
 
 class Category(models.Model):
@@ -22,6 +75,8 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(blank=True)
+    icon = models.ImageField(upload_to=categoryIconPath, blank=True, null=True)
+    banner = models.ImageField(upload_to=categoryBannerPath, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -30,6 +85,32 @@ class Category(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        # Resize icon to 120x120 max
+        if self.icon:
+            img = Image.open(self.icon.path)
+            if img.width > 120 or img.height > 120:
+                img.thumbnail((120, 120), Image.LANCZOS)
+                img.save(self.icon.path, optimize=True, quality=85)
+        
+        # Resize banner to 16:9 ratio with 800px max width
+        if self.banner:
+            img = Image.open(self.banner.path)
+            maxWidth = 800
+            targetRatio = 16/9
+            
+            if img.width > maxWidth:
+                newWidth = maxWidth
+                newHeight = int(newWidth / targetRatio)
+            else:
+                newWidth = img.width
+                newHeight = int(newWidth / targetRatio)
+            
+            img = img.resize((newWidth, newHeight), Image.LANCZOS)
+            img.save(self.banner.path, optimize=True, quality=85)
 
 
 class Mod(models.Model):
