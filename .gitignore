@@ -1,2 +1,3 @@
 /royalmods/venv
 /royalmods/db.sqlite3
+**/__pycache__/
