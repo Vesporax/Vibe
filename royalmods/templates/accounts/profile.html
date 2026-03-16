@@ -6,35 +6,35 @@
 {% block content %}
 <div class="profile-page">
     <div class="profile-header">
-        <h1>{{ profile_user.username }}'s Profile</h1>
+        <h1>Profil de {{ profile_user.username }}</h1>
         {% if user == profile_user %}
-            <a href="{% url 'accounts:settings' %}" class="btn btn-outline">Edit Profile</a>
+            <a href="{% url 'accounts:settings' %}" class="btn btn-outline">Modifier le profil</a>
         {% endif %}
     </div>
 
-    <!-- Profile Tabs -->
+    <!-- Onglets -->
     <div class="profile-tabs">
-        <button class="tab-button active" onclick="showTab('profile-info')">User Profile</button>
-        <button class="tab-button" onclick="showTab('uploads')">Uploads</button>
+        <button class="tab-button active" onclick="showTab('profile-info', event)">Profil</button>
+        <button class="tab-button" onclick="showTab('uploads', event)">Publications</button>
     </div>
 
-    <!-- User Profile Tab -->
+    <!-- Onglet Profil -->
     <div id="profile-info" class="tab-content active">
         <div class="profile-section">
-            <h2>About</h2>
+            <h2>À propos</h2>
             {% if profile_user.profile.self_presentation %}
                 <p class="user-presentation">{{ profile_user.profile.self_presentation|linebreaks }}</p>
             {% else %}
-                <p class="no-content">No presentation yet.</p>
+                <p class="no-content">Aucune présentation pour le moment.</p>
             {% endif %}
         </div>
 
         {% if social_links %}
             <div class="profile-section">
-                <h2>Social Media</h2>
+                <h2>Réseaux sociaux</h2>
                 <div class="social-links">
                     {% for link in social_links %}
-                        <a href="{{ link.url }}" target="_blank" class="social-link">
+                        <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="social-link">
                             <span class="social-icon">
                                 {% if link.platform == 'facebook' %}📘{% elif link.platform == 'youtube' %}📺{% elif link.platform == 'discord' %}💬{% else %}🔗{% endif %}
                             </span>
@@ -46,16 +46,16 @@
         {% endif %}
 
         <div class="profile-section">
-            <h2>Member Information</h2>
-            <p class="member-since">Member since: {{ profile_user.date_joined|date:"F Y" }}</p>
-            <p class="last-login">Last seen: {{ profile_user.last_login|date:"M d, Y" }}</p>
+            <h2>Informations</h2>
+            <p class="member-since">Membre depuis : {{ profile_user.date_joined|date:"F Y" }}</p>
+            <p class="last-login">Dernière connexion : {{ profile_user.last_login|date:"d M Y" }}</p>
         </div>
     </div>
 
-    <!-- Uploads Tab -->
+    <!-- Onglet Publications -->
     <div id="uploads" class="tab-content">
         <div class="profile-section">
-            <h2>Uploaded Mods</h2>
+            <h2>Mods publiés</h2>
             {% if user_mods %}
                 <div class="mods-grid">
                     {% for mod in user_mods %}
@@ -64,7 +64,7 @@
                                 {% if mod.images.first %}
                                     <img src="{{ mod.images.first.image.url }}" alt="{{ mod.name }}" class="mod-main-image">
                                 {% else %}
-                                    <div class="mod-placeholder">No Image</div>
+                                    <div class="mod-placeholder">Pas d'image</div>
                                 {% endif %}
                             </div>
                             <div class="mod-info">
@@ -79,29 +79,20 @@
                     {% endfor %}
                 </div>
                 <div class="view-more">
-                    <a href="{% url 'mods:list' %}?author={{ profile_user.username }}" class="btn btn-outline">View All Uploads</a>
+                    <a href="{% url 'mods:list' %}?author={{ profile_user.username }}" class="btn btn-outline">Voir toutes les publications</a>
                 </div>
             {% else %}
-                <p class="no-content">No mods uploaded yet.</p>
+                <p class="no-content">Aucun mod publié pour le moment.</p>
             {% endif %}
         </div>
     </div>
 </div>
 
 <script>
-function showTab(tabName) {
-    // Hide all tabs
-    const tabs = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => tab.classList.remove('active'));
-    
-    // Remove active from all buttons
-    const buttons = document.querySelectorAll('.tab-button');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    
-    // Show selected tab
+function showTab(tabName, event) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
     document.getElementById(tabName).classList.add('active');
-    
-    // Mark button as active
     event.target.classList.add('active');
 }
 </script>

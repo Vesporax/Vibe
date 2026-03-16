@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ site_config.site_name }} - Home{% endblock %}
+{% block title %}{{ site_config.site_name }} - Accueil{% endblock %}
 
 {% block content %}
 <div class="homepage">
     <div class="hero-section">
-        <h1>Welcome to {{ site_config.site_name }}</h1>
-        <p>{{ site_config.site_description|default:"Discover and share amazing mods for your favorite games!" }}</p>
+        <h1>Bienvenue sur {{ site_config.site_name }}</h1>
+        <p>{{ site_config.site_description|default:"Découvrez et partagez des mods pour vos jeux préférés !" }}</p>
         {% if not user.is_authenticated %}
             <div class="hero-actions">
-                <a href="{% url 'account_signup' %}" class="btn btn-primary">Join Now</a>
-                <a href="{% url 'core:featured' %}" class="btn btn-secondary">Browse Mods</a>
+                <a href="{% url 'account_signup' %}" class="btn btn-primary">Rejoindre la communauté</a>
+                <a href="{% url 'core:featured' %}" class="btn btn-secondary">Parcourir les mods</a>
             </div>
         {% endif %}
     </div>
 
     <div class="recent-mods-section">
-        <h2>Recent Mods</h2>
-        
+        <h2>Mods récents</h2>
+
         {% if recent_mods %}
             <div class="mods-grid">
                 {% for mod in recent_mods %}
@@ -33,28 +33,28 @@
                                     </div>
                                 {% endif %}
                             {% else %}
-                                <div class="mod-placeholder">No Image</div>
+                                <div class="mod-placeholder">Pas d'image</div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="mod-info">
                             <h3><a href="{{ mod.get_absolute_url }}">{{ mod.name }}</a></h3>
-                            <p class="mod-author">by <a href="{% url 'accounts:profile' mod.main_author.username %}">{{ mod.main_author.username }}</a></p>
+                            <p class="mod-author">par <a href="{% url 'accounts:profile' mod.main_author.username %}">{{ mod.main_author.username }}</a></p>
                             <p class="mod-game">{{ mod.game.name }}</p>
-                            <p class="mod-date">{{ mod.created_at|date:"M d, Y" }}</p>
+                            <p class="mod-date">{{ mod.created_at|date:"d/m/Y" }}</p>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-            
+
             <div class="view-more">
-                <a href="{% url 'core:featured' %}" class="btn btn-outline">View All Mods</a>
+                <a href="{% url 'core:featured' %}" class="btn btn-outline">Voir tous les mods</a>
             </div>
         {% else %}
             <div class="no-mods">
-                <p>No mods available yet. Be the first to upload one!</p>
+                <p>Aucun mod disponible pour l'instant. Soyez le premier à en publier un !</p>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'mods:upload' %}" class="btn btn-primary">Upload Mod</a>
+                    <a href="{% url 'mods:upload' %}" class="btn btn-primary">Téléverser un mod</a>
                 {% endif %}
             </div>
         {% endif %}

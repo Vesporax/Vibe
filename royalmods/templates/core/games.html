@@ -118,8 +118,8 @@
 {% block content %}
 <div class="games-page">
     <div class="page-header">
-        <h1>Browse Games</h1>
-        <p>Find mods for your favorite games</p>
+        <h1>Parcourir les jeux</h1>
+        <p>Trouvez des mods pour vos jeux préférés</p>
     </div>
 
     {% if games %}
@@ -155,27 +155,27 @@
             <div class="pagination-container">
                 <div class="pagination">
                     {% if page_obj.has_previous %}
-                        <a href="?page=1" class="btn btn-outline">First</a>
-                        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline">Previous</a>
+                        <a href="?page=1" class="btn btn-outline">Début</a>
+                        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline">Précédent</a>
                     {% endif %}
                     
                     <span class="page-info">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
                     </span>
                     
                     {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline">Next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">Last</a>
+                        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline">Suivant</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">Fin</a>
                     {% endif %}
                 </div>
             </div>
         {% endif %}
     {% else %}
         <div class="no-games">
-            <p>No games available yet.</p>
+            <p>Aucun jeu disponible pour l'instant.</p>
             {% if user.is_staff %}
-                <p>As an admin, you can add games through the admin panel.</p>
-                <a href="/admin/mods/game/add/" class="btn btn-primary">Add First Game</a>
+                <p>En tant qu'administrateur, vous pouvez ajouter des jeux via le panneau d'administration.</p>
+                <a href="/admin/mods/game/add/" class="btn btn-primary">Ajouter un jeu</a>
             {% endif %}
         </div>
     {% endif %}

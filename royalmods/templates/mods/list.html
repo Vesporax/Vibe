@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %}En vedette - RoyalMods{% endblock %}
+{% block title %}Tous les mods - RoyalMods{% endblock %}
 
 {% block content %}
-<div class="featured-page">
+<div class="mods-list-page">
     <div class="page-header">
-        <h1>Mods en vedette</h1>
-        <p>Les mods les plus populaires de la communauté</p>
+        <h1>Tous les mods</h1>
+        <p>Parcourez l'ensemble des mods de la communauté</p>
     </div>
 
-    {% if featured_mods %}
+    {% if mods %}
         <div class="mods-grid">
-            {% for mod in featured_mods %}
+            {% for mod in mods %}
                 <div class="mod-card">
                     <div class="mod-images">
                         {% if mod.images.first %}
@@ -32,6 +32,11 @@
                         <h3><a href="{{ mod.get_absolute_url }}">{{ mod.name }}</a></h3>
                         <p class="mod-author">par <a href="{% url 'accounts:profile' mod.main_author.username %}">{{ mod.main_author.username }}</a></p>
                         <p class="mod-game">{{ mod.game.name }}</p>
+                        <div class="mod-categories">
+                            {% for category in mod.categories.all %}
+                                <span class="category-tag">{{ category.name }}</span>
+                            {% endfor %}
+                        </div>
                         <div class="mod-stats">
                             <span class="mod-views">👁 {{ mod.views_count }}</span>
                             <span class="mod-downloads">⬇ {{ mod.downloads_count }}</span>

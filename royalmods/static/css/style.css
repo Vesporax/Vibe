@@ -205,6 +205,12 @@ body {
     color: #000;
 }
 
+.dark-mode a.btn-primary,
+.dark-mode a.btn-primary:visited,
+.dark-mode a.btn-primary:hover {
+    color: #000;
+}
+
 .btn-primary:hover {
     background-color: #ffed4a;
 }

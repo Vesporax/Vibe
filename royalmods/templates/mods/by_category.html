@@ -1,17 +1,27 @@
 {% extends 'base.html' %}
 
-{% block title %}En vedette - RoyalMods{% endblock %}
+{% block title %}{{ category.name }} - Mods - RoyalMods{% endblock %}
 
 {% block content %}
-<div class="featured-page">
+<div class="by-category-page">
     <div class="page-header">
-        <h1>Mods en vedette</h1>
-        <p>Les mods les plus populaires de la communauté</p>
+        {% if category.banner %}
+            <img src="{{ category.banner.url }}" alt="{{ category.name }}" style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-bottom:1.5rem;">
+        {% endif %}
+        <h1>
+            {% if category.icon %}<img src="{{ category.icon.url }}" alt="" style="height:40px;vertical-align:middle;margin-right:10px;">{% endif %}
+            {{ category.name }}
+        </h1>
+        {% if category.description %}
+            <p>{{ category.description }}</p>
+        {% else %}
+            <p>Parcourez tous les mods de la catégorie {{ category.name }}</p>
+        {% endif %}
     </div>
 
-    {% if featured_mods %}
+    {% if mods %}
         <div class="mods-grid">
-            {% for mod in featured_mods %}
+            {% for mod in mods %}
                 <div class="mod-card">
                     <div class="mod-images">
                         {% if mod.images.first %}
@@ -59,11 +69,9 @@
         {% endif %}
     {% else %}
         <div class="no-mods">
-            <p>Aucun mod disponible pour l'instant.</p>
+            <p>Aucun mod dans la catégorie {{ category.name }} pour l'instant.</p>
             {% if user.is_authenticated %}
-                <a href="{% url 'mods:upload' %}" class="btn btn-primary">Publier le premier mod !</a>
-            {% else %}
-                <a href="{% url 'account_signup' %}" class="btn btn-primary">Rejoindre pour publier des mods</a>
+                <a href="{% url 'mods:upload' %}" class="btn btn-primary">Publier un mod dans cette catégorie !</a>
             {% endif %}
         </div>
     {% endif %}

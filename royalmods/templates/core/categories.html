@@ -129,8 +129,8 @@
 {% block content %}
 <div class="categories-page">
     <div class="page-header">
-        <h1>Browse Categories</h1>
-        <p>Explore mods organized by category</p>
+        <h1>Parcourir les catégories</h1>
+        <p>Explorez les mods organisés par catégorie</p>
     </div>
 
     {% if categories %}
@@ -169,27 +169,27 @@
             <div class="pagination-container">
                 <div class="pagination">
                     {% if page_obj.has_previous %}
-                        <a href="?page=1" class="btn btn-outline">First</a>
-                        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline">Previous</a>
+                        <a href="?page=1" class="btn btn-outline">Début</a>
+                        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline">Précédent</a>
                     {% endif %}
                     
                     <span class="page-info">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
                     </span>
                     
                     {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline">Next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">Last</a>
+                        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline">Suivant</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">Fin</a>
                     {% endif %}
                 </div>
             </div>
         {% endif %}
     {% else %}
         <div class="no-categories">
-            <p>No categories available yet.</p>
+            <p>Aucune catégorie disponible pour l'instant.</p>
             {% if user.is_staff %}
-                <p>As an admin, you can add categories through the admin panel.</p>
-                <a href="/admin/mods/category/add/" class="btn btn-primary">Add First Category</a>
+                <p>En tant qu'administrateur, vous pouvez ajouter des catégories via le panneau d'administration.</p>
+                <a href="/admin/mods/category/add/" class="btn btn-primary">Ajouter une catégorie</a>
             {% endif %}
         </div>
     {% endif %}
