@@ -1,3 +1,23 @@
-/royalmods/venv
-/royalmods/db.sqlite3
-**/__pycache__/
+# Environnement Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Variables d'environnement — NE JAMAIS COMMIT
+.env
+
+# Django
+db.sqlite3
+staticfiles/
+media/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
