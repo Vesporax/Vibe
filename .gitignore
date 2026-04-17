@@ -5,7 +5,7 @@ __pycache__/
 *.py[cod]
 *.pyo
 
-# Variables d'environnement — NE JAMAIS COMMIT
+# Variables d'environnement
 .env
 
 # Django
